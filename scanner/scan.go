@@ -14,11 +14,12 @@
 package scan
 
 import (
-	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
 	"log"
 	"regexp"
 	"strings"
+
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 type Secret struct {
@@ -47,7 +48,11 @@ func DownloadRepository(repoUrl string, dir string) *git.Repository {
 	return repo
 }
 
-func Scan(repo *git.Repository) secret {
+type CommitGetter interface {
+	CommitObjects() (object.CommitIter, error)
+}
+
+func Scan(repo CommitGetter) secret {
 	secrets := secret{}
 
 	commits, _ := repo.CommitObjects()
